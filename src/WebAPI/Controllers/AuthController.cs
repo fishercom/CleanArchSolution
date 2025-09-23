@@ -4,6 +4,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Threading.Tasks;
+using System;
 
 namespace WebAPI.Controllers
 {
@@ -24,7 +26,7 @@ namespace WebAPI.Controllers
                 var key = Encoding.UTF8.GetBytes("SuperSecretKey123!");
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
-                    Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, user.UserName) }),
+                    Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, user.UserName ?? "unknown") }),
                     Expires = DateTime.UtcNow.AddHours(1),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 };

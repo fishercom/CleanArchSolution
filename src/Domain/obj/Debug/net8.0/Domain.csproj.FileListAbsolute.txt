@@ -1,0 +1,12 @@
+/Users/fischer/Projects/CleanArchSolution/src/Domain/bin/Debug/net8.0/Domain.deps.json
+/Users/fischer/Projects/CleanArchSolution/src/Domain/bin/Debug/net8.0/Domain.dll
+/Users/fischer/Projects/CleanArchSolution/src/Domain/bin/Debug/net8.0/Domain.pdb
+/Users/fischer/Projects/CleanArchSolution/src/Domain/obj/Debug/net8.0/Domain.GeneratedMSBuildEditorConfig.editorconfig
+/Users/fischer/Projects/CleanArchSolution/src/Domain/obj/Debug/net8.0/Domain.AssemblyInfoInputs.cache
+/Users/fischer/Projects/CleanArchSolution/src/Domain/obj/Debug/net8.0/Domain.AssemblyInfo.cs
+/Users/fischer/Projects/CleanArchSolution/src/Domain/obj/Debug/net8.0/Domain.csproj.CoreCompileInputs.cache
+/Users/fischer/Projects/CleanArchSolution/src/Domain/obj/Debug/net8.0/Domain.sourcelink.json
+/Users/fischer/Projects/CleanArchSolution/src/Domain/obj/Debug/net8.0/Domain.dll
+/Users/fischer/Projects/CleanArchSolution/src/Domain/obj/Debug/net8.0/refint/Domain.dll
+/Users/fischer/Projects/CleanArchSolution/src/Domain/obj/Debug/net8.0/Domain.pdb
+/Users/fischer/Projects/CleanArchSolution/src/Domain/obj/Debug/net8.0/ref/Domain.dll
