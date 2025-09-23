@@ -1,12 +1,12 @@
-using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Domain.Entities;
 
 namespace Infrastructure.Data
 {
-    public class AppDbContext : IdentityDbContext
+    public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-        public DbSet<Product> Products => Set<Product>();
+
+        public DbSet<Product> Products { get; set; }
     }
 }

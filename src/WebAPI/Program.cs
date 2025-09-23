@@ -14,6 +14,16 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddIdentity<Microsoft.AspNetCore.Identity.IdentityUser, Microsoft.AspNetCore.Identity.IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -45,3 +55,14 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+// Migraciones automáticas
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();   // Aplica migraciones pendientes
+    DbSeeder.Seed(db);       // Seed de productos
+
+    //var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+    //await DataSeeder.SeedAsync(userManager); // Seed de usuarios
+}
