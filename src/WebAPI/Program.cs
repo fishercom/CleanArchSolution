@@ -50,19 +50,20 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-app.Run();
-
-// Migraciones automáticas
+// Automatic migrations
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();   // Aplica migraciones pendientes
-    DbSeeder.Seed(db);       // Seed de productos
+    db.Database.Migrate();   // Apply pending migrations
+    DbSeeder.Seed(db);       // Seed products
 
     //var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-    //await DataSeeder.SeedAsync(userManager); // Seed de usuarios
+    //await DataSeeder.SeedAsync(userManager); // Seed users
 }
+
+app.Run();

@@ -1,14 +1,14 @@
 # 🏗️ Clean Architecture Solution (.NET 8 + PostgreSQL + Identity + JWT)
 
-Incluye Clean Architecture, CQRS, EF Core, PostgreSQL, JWT y Swagger.
+Includes Clean Architecture, CQRS, EF Core, PostgreSQL, JWT and Swagger.
 
-## 📂 Estructura
+## 📂 Structure
 - Domain
 - Application
 - Infrastructure
 - WebAPI
 
-## 🚀 Correr
+## 🚀 Run
 ```bash
 dotnet restore
 dotnet ef migrations add InitialCreate --project src/Infrastructure --startup-project src/WebAPI
@@ -16,9 +16,9 @@ dotnet ef database update --project src/Infrastructure --startup-project src/Web
 dotnet run --project src/WebAPI
 ```
 
-## 🖼️ Diagramas
+## 🖼️ Diagrams
 
-### Arquitectura
+### Architecture
 ```mermaid
 flowchart TD
     A[Domain] --> B[Application]
@@ -30,12 +30,12 @@ flowchart TD
 ### JWT Auth
 ```mermaid
 sequenceDiagram
-    participant U as Usuario
+    participant U as User
     participant A as API
     U->>A: Login
     A-->>U: JWT Token
-    U->>A: Request con Token
-    A-->>U: Respuesta
+    U->>A: Request with Token
+    A-->>U: Response
 ```
 
 ### CRUD
