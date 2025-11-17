@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 using System;
 
@@ -14,16 +15,17 @@ namespace WebAPI.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager;
-        public AuthController(UserManager<IdentityUser> userManager) { _userManager = userManager; }
+        private readonly IConfiguration configuration;
+        public AuthController(UserManager<IdentityUser> userManager, IConfiguration config) { _userManager = userManager; configuration = config;}
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
-            var user = await _userManager.FindByNameAsync(dto.Username);
+            var user = await _userManager.FindByEmailAsync(dto.Email);
             if(user != null && await _userManager.CheckPasswordAsync(user, dto.Password))
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.UTF8.GetBytes("SuperSecretKey123!");
+                var key = Encoding.UTF8.GetBytes(configuration["Jwt:Key"]);
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, user.UserName ?? "unknown") }),
@@ -37,5 +39,5 @@ namespace WebAPI.Controllers
         }
     }
 
-    public record LoginDto(string Username, string Password);
+    public record LoginDto(string Email, string Password);
 }

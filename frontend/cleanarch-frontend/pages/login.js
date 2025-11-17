@@ -22,22 +22,14 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <>
       <Head>
         <title>Login - The Gilded Emporium</title>
         <meta name="description" content="Access your account at The Gilded Emporium" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <header className="bg-primary shadow-md">
-        <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl font-bold text-white text-center">
-            The Gilded Emporium
-          </h1>
-        </div>
-      </header>
-
-      <main className="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
           <div>
             <h2 className="mt-6 text-center text-3xl font-extrabold text-primary">
@@ -92,15 +84,7 @@ export default function Login() {
             </div>
           </form>
         </div>
-      </main>
-
-      <footer className="bg-primary mt-auto">
-          <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-              <p className="text-center text-white text-sm font-sans">
-                  &copy; {new Date().getFullYear()} The Gilded Emporium. All rights reserved.
-              </p>
-          </div>
-      </footer>
-    </div>
+      </div>
+    </>
   );
 }

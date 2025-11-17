@@ -7,11 +7,11 @@ namespace Infrastructure.Data
     {
         public static async Task SeedAsync(UserManager<IdentityUser> userManager)
         {
-            var admin = await userManager.FindByNameAsync("superadmin");
+            var admin = await userManager.FindByNameAsync("admin@example.com");
             if(admin == null)
             {
-                var user = new IdentityUser { UserName = "superadmin" };
-                await userManager.CreateAsync(user, "Admin123!");
+                var user = new IdentityUser { UserName = "admin@example.com", Email = "admin@example.com", EmailConfirmed = true };
+                await userManager.CreateAsync(user, "Admin@123");
             }
         }
     }

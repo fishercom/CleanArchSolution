@@ -2,14 +2,18 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Data;
+using Application.Interfaces;
 using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<AppDbContext>());
 
 builder.Services.AddIdentity<Microsoft.AspNetCore.Identity.IdentityUser, Microsoft.AspNetCore.Identity.IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>();
@@ -37,10 +41,11 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = false,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SuperSecretKey123!"))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ThisIsAVeryLongAndSecureSecretKeyForJwtSigningThatIsAtLeast32BytesLong"))
     };
 });
 
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Application.Products.Commands.CreateProductCommand).Assembly));
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -55,15 +60,16 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-// Automatic migrations
+// Automatic migrations and seeding
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();   // Apply pending migrations
-    DbSeeder.Seed(db);       // Seed products
+    var services = scope.ServiceProvider;
+    var dbContext = services.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate();   // Apply pending migrations
+    DbSeeder.Seed(dbContext);       // Seed products
 
-    //var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-    //await DataSeeder.SeedAsync(userManager); // Seed users
+    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+    await DataSeeder.SeedAsync(userManager); // Seed users
 }
 
 app.Run();
