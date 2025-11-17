@@ -25,7 +25,7 @@ namespace WebAPI.Controllers
             if(user != null && await _userManager.CheckPasswordAsync(user, dto.Password))
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.UTF8.GetBytes(configuration["Jwt:Key"]);
+                var key = Encoding.UTF8.GetBytes(configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key configuration is missing"));
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, user.UserName ?? "unknown") }),
