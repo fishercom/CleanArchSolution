@@ -15,7 +15,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<AppDbContext>());
 
-builder.Services.AddIdentity<Microsoft.AspNetCore.Identity.IdentityUser, Microsoft.AspNetCore.Identity.IdentityRole>()
+builder.Services.AddIdentity<Domain.Entities.ApplicationUser, Microsoft.AspNetCore.Identity.IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>();
 
 builder.Services.AddCors(options =>
@@ -68,7 +68,7 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.Migrate();   // Apply pending migrations
     DbSeeder.Seed(dbContext);       // Seed products
 
-    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+    var userManager = services.GetRequiredService<UserManager<Domain.Entities.ApplicationUser>>();
     await DataSeeder.SeedAsync(userManager); // Seed users
 }
 

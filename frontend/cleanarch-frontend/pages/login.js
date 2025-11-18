@@ -1,11 +1,15 @@
 import { useState } from "react";
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import api from "../services/api";
+import { useAuth } from '../context/AuthContext'; // Import useAuth
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const router = useRouter();
+  const { login } = useAuth(); // Use the login function from AuthContext
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -14,7 +18,8 @@ export default function Login() {
       const response = await api.post("/auth/login", { email, password });
       const { token } = response.data;
       localStorage.setItem("jwt", token);
-      window.location.href = '/';
+      login(); // Call login from AuthContext
+      router.push('/');
     } catch (err) {
       setError("Login failed. Please check your credentials.");
       console.error("Login error:", err);

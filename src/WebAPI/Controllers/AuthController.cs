@@ -1,3 +1,4 @@
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -14,9 +15,9 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration configuration;
-        public AuthController(UserManager<IdentityUser> userManager, IConfiguration config) { _userManager = userManager; configuration = config;}
+        public AuthController(UserManager<ApplicationUser> userManager, IConfiguration config) { _userManager = userManager; configuration = config;}
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
@@ -26,9 +27,15 @@ namespace WebAPI.Controllers
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.UTF8.GetBytes(configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key configuration is missing"));
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.UserName ?? "unknown"),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id)
+                };
+
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
-                    Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, user.UserName ?? "unknown") }),
+                    Subject = new ClaimsIdentity(claims),
                     Expires = DateTime.UtcNow.AddHours(1),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 };

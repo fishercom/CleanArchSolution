@@ -1,18 +1,17 @@
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useAuth } from '../context/AuthContext'; // Import useAuth
 
 export default function Header() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn, logout } = useAuth(); // Use isLoggedIn and logout from AuthContext
+  const router = useRouter();
 
-  useEffect(() => {
-    const token = localStorage.getItem('jwt');
-    setIsLoggedIn(!!token);
-  }, []);
+  // No need for local isLoggedIn state or useEffect here anymore, AuthContext handles it
 
   const handleLogout = () => {
-    localStorage.removeItem('jwt');
-    setIsLoggedIn(false);
-    window.location.href = '/';
+    logout(); // Call logout from AuthContext
+    router.push('/login'); // Redirect to login page after logout
   };
 
   return (
@@ -25,7 +24,10 @@ export default function Header() {
           <ul className="flex space-x-4 items-center">
             <li><Link href="/" className="text-white hover:text-accent">Home</Link></li>
             {isLoggedIn && (
-              <li><Link href="/products" className="text-white hover:text-accent">Manage Products</Link></li>
+              <>
+                <li><Link href="/products" className="text-white hover:text-accent">Manage Products</Link></li>
+                <li><Link href="/profile" className="text-white hover:text-accent">Profile</Link></li>
+              </>
             )}
             {isLoggedIn ? (
               <li>
