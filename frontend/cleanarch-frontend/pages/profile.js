@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Head from 'next/head';
 import api from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 export default function Profile() {
-    const [user, setUser] = useState(null);
+    const { user, setUser } = useAuth(); // Get user and setUser from AuthContext
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
@@ -13,22 +13,27 @@ export default function Profile() {
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [message, setMessage] = useState('');
     const router = useRouter();
+    const defaultAvatar = '/default-avatar.svg'; // Path to your default avatar
 
     useEffect(() => {
         const token = localStorage.getItem('jwt');
         if (!token) {
             router.push('/login');
-        } else {
+        } else if (!user) { // Only fetch if user is not already in context
             fetchUserProfile(token);
+        } else {
+            setFirstName(user.firstName || '');
+            setLastName(user.lastName || '');
+            setPhoneNumber(user.phoneNumber || '');
         }
-    }, []);
+    }, [user, router]);
 
     const fetchUserProfile = async (token) => {
         try {
             const response = await api.get('/UserProfile', {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            setUser(response.data);
+            setUser(response.data); // Update user in AuthContext
             setFirstName(response.data.firstName || '');
             setLastName(response.data.lastName || '');
             setPhoneNumber(response.data.phoneNumber || '');
@@ -43,11 +48,12 @@ export default function Profile() {
         setMessage('');
         const token = localStorage.getItem('jwt');
         try {
-            await api.put('/UserProfile', { firstName, lastName, phoneNumber }, {
+            const updatedProfile = { firstName, lastName, phoneNumber };
+            await api.put('/UserProfile', updatedProfile, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setMessage('Profile updated successfully!');
-            fetchUserProfile(token); // Refresh profile data
+            setUser(prevUser => ({ ...prevUser, ...updatedProfile })); // Update user in AuthContext
         } catch (error) {
             console.error('Error updating profile:', error);
             setMessage('Failed to update profile.');
@@ -77,20 +83,22 @@ export default function Profile() {
     };
 
     if (!user) {
-        return <><p>Loading profile...</p></>;
+        return <p>Loading profile...</p>;
     }
+
+    const userAvatar = user && user.avatarUrl ? user.avatarUrl : defaultAvatar;
 
     return (
         <>
-        <Head>
-            <title>Manage Products - The Gilded Emporium</title>
-        </Head>
-
-        <div className="max-w-7xl mx-auto py-12 sm:px-6 lg:px-8">
-          <div className="px-4 py-6 sm:px-0">
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold text-primary">User Profile</h1>
                 {message && <p className="mb-4 text-green-500">{message}</p>}
+            </div>
+
+            <div className="flex flex-col items-center mb-8">
+                <img src={userAvatar} alt="User Avatar" className="w-24 h-24 rounded-full mb-4" />
+                <h2 className="text-xl font-semibold">{user.firstName} {user.lastName}</h2>
+                <p className="text-gray-600">{user.email}</p>
             </div>
 
             <div className="px-4 py-6 sm:px-0">
@@ -145,7 +153,7 @@ export default function Profile() {
                 </form>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-md">
+            <div className="bg-white p-6 rounded-lg shadow-md mt-8">
                 <h2 className="text-xl font-semibold mb-4">Change Password</h2>
                 <form onSubmit={handleChangePassword}>
                     <div className="mb-4">
@@ -189,8 +197,6 @@ export default function Profile() {
                     </button>
                 </form>
             </div>
-          </div>
-        </div>
-      </>
+        </>
     );
 }

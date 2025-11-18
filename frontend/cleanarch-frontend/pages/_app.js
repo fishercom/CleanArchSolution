@@ -1,15 +1,26 @@
 import '../styles/globals.css'
-import Layout from '../components/Layout';
-import { AuthProvider } from '../context/AuthContext'; // Import AuthProvider
+import { AuthProvider } from '../context/AuthContext';
+import { useRouter } from 'next/router';
+import DashboardLayout from '../components/DashboardLayout';
 
 function MyApp({ Component, pageProps }) {
+  const router = useRouter();
+
+  if (router.pathname === '/login') {
+    return (
+      <AuthProvider>
+        <Component {...pageProps} />
+      </AuthProvider>
+    );
+  }
+
   return (
     <AuthProvider>
-      <Layout>
+      <DashboardLayout>
         <Component {...pageProps} />
-      </Layout>
+      </DashboardLayout>
     </AuthProvider>
   );
 }
 
-export default MyApp
+export default MyApp;

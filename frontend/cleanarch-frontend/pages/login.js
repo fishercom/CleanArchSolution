@@ -18,7 +18,12 @@ export default function Login() {
       const response = await api.post("/auth/login", { email, password });
       const { token } = response.data;
       localStorage.setItem("jwt", token);
-      login(); // Call login from AuthContext
+
+      // Fetch user profile after successful login
+      const userProfileResponse = await api.get('/UserProfile', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      login(userProfileResponse.data); // Call login from AuthContext with user data
       router.push('/');
     } catch (err) {
       setError("Login failed. Please check your credentials.");
