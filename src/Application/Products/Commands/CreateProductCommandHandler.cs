@@ -20,6 +20,7 @@ namespace Application.Products.Commands
             var product = new Product
             {
                 Name = request.Name,
+                Description = request.Description,
                 Price = request.Price
             };
 

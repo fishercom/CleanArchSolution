@@ -3,5 +3,5 @@ using Domain.Entities;
 
 namespace Application.Products.Commands
 {
-    public record CreateProductCommand(string Name, decimal Price) : IRequest<Product>;
+    public record CreateProductCommand(string Name, string Description, decimal Price) : IRequest<Product>;
 }
