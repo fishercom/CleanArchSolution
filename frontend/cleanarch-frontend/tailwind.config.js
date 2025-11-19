@@ -14,7 +14,7 @@ module.exports = {
       },
       fontFamily: {
         sans: ['Lato', 'sans-serif'],
-        serif: ['Playfair Display', 'serif'],
+        serif: ['Lora', 'serif'],
       },
     },
   },
